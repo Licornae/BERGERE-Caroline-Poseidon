@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,9 +64,9 @@ public class UnitRuleTests {
 
         when(ruleNameRepository.findById(999)).thenReturn(Optional.empty());
 
-        Optional<RuleName> result = ruleNameService.findById(999);
-
-        assertThat(result).isEmpty();
+        assertThatThrownBy(() -> ruleNameService.findById(999))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("RuleName not found for id: 999");
     }
 
     @Test
