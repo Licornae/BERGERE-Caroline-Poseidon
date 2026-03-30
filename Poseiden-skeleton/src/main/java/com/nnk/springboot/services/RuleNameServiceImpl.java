@@ -25,7 +25,8 @@ public class RuleNameServiceImpl implements RuleNameService {
 
     @Override
     public Optional<RuleName> findById(Integer id) {
-        return ruleNameRepository.findById(id);
+        return Optional.ofNullable(ruleNameRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("RuleName not found for id: " + id)));
     }
 
     @Override

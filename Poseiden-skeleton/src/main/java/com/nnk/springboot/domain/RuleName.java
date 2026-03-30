@@ -7,22 +7,40 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "rulename")
 public class RuleName {
-    // TODO: ajouter des contraintes de validation
+
+    public RuleName(Integer id, String name, String description, String json, String sqlStr, String template, String sqlPart) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.json = json;
+        this.sqlStr = sqlStr;
+        this.template = template;
+        this.sqlPart = sqlPart;
+    }
+
+    public RuleName() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="name", length=125)
+    @Column(name="name", length=125, nullable = false)
+    @NotBlank(message = "Name is required")
     private String name;
+
     @Column(name="description", length=125)
     private String description;
+
     @Column(name="json", length=125)
     private String json;
+
     @Column(name="template", length=125)
     private String template;
+
     @Column(name="sqlStr", length=125)
     private String sqlStr;
+
     @Column(name="sqlPart", length=125)
     private String sqlPart;
 
