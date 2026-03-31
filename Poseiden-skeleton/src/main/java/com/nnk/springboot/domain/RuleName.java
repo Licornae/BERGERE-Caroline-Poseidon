@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
+/**
+ * Represents a RuleName entity that holds information about a business rule.
+ * This class is mapped to the "rulename" table in the database.
+ */
 @Entity
 @Table(name = "rulename")
 public class RuleName {
