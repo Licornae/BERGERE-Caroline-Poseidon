@@ -11,9 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,5 +68,14 @@ public class UnitRatingTests {
         assertThat(result).isPresent();
         assertThat(result.get().getMoodysRating()).isEqualTo("Aa1");
         assertThat(result.get().getOrderNumber()).isEqualTo(2);
+    }
+
+    @Test
+    public void findById_shouldReturnExceptionWhenRatingDoesNotExist() {
+        when(ratingRepository.findById(999)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> ratingService.findById(999))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Rating not found for id: 999");
     }
 }
