@@ -88,11 +88,12 @@ public class UnitRuleTests {
     }
 
     @Test
-    public void deleteById_shouldDeleteRuleName(){
+    public void deleteById_shouldDeleteRuleName() {
 
         int ruleId = 1;
 
-        doNothing().when(ruleNameRepository).deleteById(ruleId); // doNothing() pour simuler une méthode `void`
+        when(ruleNameRepository.existsById(ruleId)).thenReturn(true);
+        doNothing().when(ruleNameRepository).deleteById(ruleId);
 
         ruleNameService.deleteById(ruleId);
 
