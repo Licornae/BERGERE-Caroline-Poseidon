@@ -26,7 +26,14 @@ public class ratingServiceImpl implements ratingService {
 
     @Override
     public Optional<Rating> findById(Integer id) {
-        return null;
+
+        Optional<Rating> rating = ratingRepository.findById(id);
+
+        if (rating.isEmpty()) {
+            String errorMsg = "Rating not found for id: " + id;
+            throw new IllegalArgumentException(errorMsg);
+        }
+        return rating;
     }
 
     @Override
