@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -49,5 +50,21 @@ public class UnitRatingTests {
 
         assertThat(result.get(1).getMoodysRating()).isEqualTo("Ba2");
         assertThat(result.get(1).getOrderNumber()).isEqualTo(8);
+    }
+
+    @Test
+    public void findById_shouldReturnCorrespondingRating() {
+        Rating rating = new Rating();
+        rating.setId(1);
+        rating.setMoodysRating("Aa1");
+        rating.setOrderNumber(2);
+
+        when(ratingRepository.findById(1)).thenReturn(java.util.Optional.of(rating));
+
+        Optional<Rating> result = ratingService.findById(1);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getMoodysRating()).isEqualTo("Aa1");
+        assertThat(result.get().getOrderNumber()).isEqualTo(2);
     }
 }
