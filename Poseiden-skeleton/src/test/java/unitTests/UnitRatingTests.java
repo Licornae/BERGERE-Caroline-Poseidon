@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UnitRatingTests {
@@ -100,4 +100,18 @@ public class UnitRatingTests {
         assertThat(actualRating.getMoodysRating()).isEqualTo(savedRating.getMoodysRating());
         assertThat(actualRating.getOrderNumber()).isEqualTo(savedRating.getOrderNumber());
     }
+
+    @Test
+    public void deleteById_shouldDeleteRating() {
+        int ratingId = 1;
+
+        when(ratingRepository.existsById(ratingId)).thenReturn(true);
+        doNothing().when(ratingRepository).deleteById(ratingId);
+
+        ratingService.deleteById(ratingId);
+
+        verify(ratingRepository, times(1)).deleteById(ratingId);
+    }
+
+
 }
