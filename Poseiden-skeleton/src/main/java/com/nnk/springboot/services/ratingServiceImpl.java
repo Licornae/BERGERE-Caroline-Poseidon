@@ -38,7 +38,7 @@ public class ratingServiceImpl implements ratingService {
 
     @Override
     public Rating save(Rating rating) {
-        return null;
+        return ratingRepository.save(rating);
     }
 
     @Override
