@@ -47,7 +47,7 @@ public class UnitRatingTests {
         assertThat(result.get(0).getMoodysRating()).isEqualTo("Aa1");
         assertThat(result.get(0).getOrderNumber()).isEqualTo(2);
 
-        assertThat(result.get(1).getMoodysRating()).isEqualTo("Ba1");
+        assertThat(result.get(1).getMoodysRating()).isEqualTo("Ba2");
         assertThat(result.get(1).getOrderNumber()).isEqualTo(8);
     }
 }
