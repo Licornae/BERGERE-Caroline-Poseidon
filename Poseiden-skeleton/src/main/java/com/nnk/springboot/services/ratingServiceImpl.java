@@ -43,5 +43,15 @@ public class ratingServiceImpl implements ratingService {
 
     @Override
     public void deleteById(Integer id) {
+
+        try {
+            if (!ratingRepository.existsById(id)) {
+                String errorMsg = "Rating not found for id: " + id;
+                throw new IllegalArgumentException(errorMsg);
+            }
+            ratingRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting rating with id: " + id + ". "+ e.getMessage());
+        }
     }
 }
