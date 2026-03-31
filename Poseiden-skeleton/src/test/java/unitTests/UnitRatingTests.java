@@ -78,4 +78,26 @@ public class UnitRatingTests {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Rating not found for id: 999");
     }
+
+    @Test
+    public void save_shouldReturnSavedRating() {
+        Rating ratingToSave = new Rating();
+        ratingToSave.setId(1);
+        ratingToSave.setMoodysRating("Aa1");
+        ratingToSave.setOrderNumber(2);
+
+        Rating savedRating = new Rating();
+        savedRating.setId(1);
+        savedRating.setMoodysRating("Aa1");
+        savedRating.setOrderNumber(2);
+
+        when(ratingRepository.save(ratingToSave)).thenReturn(savedRating);
+
+        Rating actualRating = ratingService.save(ratingToSave);
+
+        assertThat(actualRating).isEqualTo(savedRating);
+        assertThat(actualRating.getId()).isEqualTo(savedRating.getId());
+        assertThat(actualRating.getMoodysRating()).isEqualTo(savedRating.getMoodysRating());
+        assertThat(actualRating.getOrderNumber()).isEqualTo(savedRating.getOrderNumber());
+    }
 }
