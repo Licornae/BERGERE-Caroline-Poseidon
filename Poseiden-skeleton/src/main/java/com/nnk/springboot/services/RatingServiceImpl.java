@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ratingServiceImpl implements ratingService {
+public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
 
     @Autowired
-    public ratingServiceImpl(RatingRepository ratingRepository) {
+    public RatingServiceImpl(RatingRepository ratingRepository) {
         this.ratingRepository = ratingRepository;
     }
 

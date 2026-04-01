@@ -2,7 +2,7 @@ package unitTests;
 
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.repositories.RatingRepository;
-import com.nnk.springboot.services.ratingServiceImpl;
+import com.nnk.springboot.services.RatingServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +24,7 @@ public class UnitRatingTests {
     private RatingRepository ratingRepository;
 
     @InjectMocks
-    private ratingServiceImpl ratingService;
+    private RatingServiceImpl ratingService;
 
     @Test
     public void findAll_shouldReturnAllRating(){
