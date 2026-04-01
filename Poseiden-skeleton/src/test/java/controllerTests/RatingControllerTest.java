@@ -48,5 +48,21 @@ public class RatingControllerTest {
                 .andExpect(model().attribute("ratings", mockRatings));
     }
 
+    @Test
+    @WithMockUser(username = "testuser")
+    public void validate_withValidData_shouldSaveRatingAndRedirect() throws Exception {
+
+        Rating rating = new Rating(null, "Aa1","Aa2","Aa2",3);
+
+        Mockito.when(ratingService.save(Mockito.any(Rating.class))).thenReturn(rating);
+
+        mockMvc.perform(post("/rating/validate")
+                        .param("moodysRating", "Aa1")
+                        .param("sandPRating", "Aa2")
+                        .param("fitchRating", "Aa2")
+                        .param("orderNumber", "3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/rating/list"));
+    }
 
 }
