@@ -33,8 +33,8 @@ public class RatingController {
 
     @PostMapping("/rating/validate")
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Rating list
-        return "rating/add";
+        ratingService.save(rating);
+        return "redirect:/rating/list";
     }
 
     @GetMapping("/rating/update/{id}")
