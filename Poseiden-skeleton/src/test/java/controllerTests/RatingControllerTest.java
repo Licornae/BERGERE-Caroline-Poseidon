@@ -65,4 +65,17 @@ public class RatingControllerTest {
                 .andExpect(redirectedUrl("/rating/list"));
     }
 
+    @Test
+    @WithMockUser(username = "testuser")
+    public void validate_withInvalidData_shouldNotSaveRatingAndReturnAddView() throws Exception {
+        mockMvc.perform(post("/rating/validate")
+                        .param("moodysRating", "")
+                        .param("fitchRating", "Aa2")
+                        .param("orderNumber", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("rating/add"))
+                .andExpect(model().attributeHasFieldErrors("rating", "orderNumber"));
+    }
+
+
 }
