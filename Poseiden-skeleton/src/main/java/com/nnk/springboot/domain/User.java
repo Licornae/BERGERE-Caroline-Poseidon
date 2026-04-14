@@ -6,6 +6,18 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @Table(name = "users")
 public class User {
+
+    public User(int id, String username, String password, String fullname, String role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.role = role;
+    }
+
+    public User() {
+    }
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
@@ -25,6 +37,8 @@ public class User {
     @NotBlank(message = "Role is mandatory")
     @Column(name = "role", length = 125)
     private String role;
+
+
 
     public Integer getId() {
         return id;
