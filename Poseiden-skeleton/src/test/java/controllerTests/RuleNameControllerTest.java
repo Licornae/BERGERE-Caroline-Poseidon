@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.test.context.support.WithMockUser;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -31,6 +33,7 @@ public class RuleNameControllerTest {
     @MockBean
     private RuleNameService ruleNameService;
 
+    //TESTS LIST
     @Test
     @WithMockUser(username = "testuser")
     public void list_shouldReturnRuleNameListView() throws Exception {
@@ -49,6 +52,7 @@ public class RuleNameControllerTest {
                 .andExpect(model().attribute("ruleNames", mockRuleNames));
     }
 
+    //TESTS VALIDATION
     @Test
     @WithMockUser(username = "testuser")
     public void validate_withValidData_shouldSaveAndRedirect() throws Exception {
@@ -85,12 +89,13 @@ public class RuleNameControllerTest {
                 .andExpect(model().attributeHasFieldErrors("ruleName", "name"));
     }
 
+    //TESTS UPDATE
     @Test
     @WithMockUser(username = "testuser")
     public void showUpdateForm_shouldReturnUpdateViewWithRuleName() throws Exception {
         RuleName mockRuleName = new RuleName(1, "Rule1", "Description1", "Json1", "Template1", "SqlStr1", "SqlPart1");
 
-        Mockito.when(ruleNameService.findById(1)).thenReturn(java.util.Optional.of(mockRuleName));
+        Mockito.when(ruleNameService.findById(1)).thenReturn(Optional.of(mockRuleName));
 
         mockMvc.perform(get("/ruleName/update/1"))
                 .andExpect(status().isOk())
@@ -135,6 +140,7 @@ public class RuleNameControllerTest {
                 .andExpect(model().attributeHasFieldErrors("ruleName", "name"));
     }
 
+    //TESTS DELETE
     @Test
     @WithMockUser(username = "testuser")
     public void deleteRuleName_shouldDeleteAndRedirect() throws Exception {
