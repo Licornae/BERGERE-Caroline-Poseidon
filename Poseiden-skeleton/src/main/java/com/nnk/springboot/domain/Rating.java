@@ -8,6 +8,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.sql.Timestamp;
 
+/**
+ * Represents a credit rating entity for storing rating information such as Moody's, S&P,
+ * and Fitch credit ratings along with an order number.
+ * This class is mapped to the "rating" table in the database.
+ * It includes validation constraints to ensure data integrity for each field.
+ */
 @Entity
 @Table(name = "rating")
 public class Rating {
