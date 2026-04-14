@@ -60,7 +60,7 @@ public class UnitRuleTests {
     }
 
     @Test
-    public void findById_shouldReturnEmptyWhenRuleDoesNotExist() {
+    public void findById_shouldReturnExceptionWhenRuleDoesNotExist() {
 
         when(ruleNameRepository.findById(999)).thenReturn(Optional.empty());
 
