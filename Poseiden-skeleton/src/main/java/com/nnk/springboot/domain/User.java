@@ -3,6 +3,16 @@ package com.nnk.springboot.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Represents a User entity in the application with fields for id, username,
+ * password, full name, and role. This class is mapped to the "users" table
+ * in the database.
+ * Each field is associated with specific constraints and mapped to corresponding
+ * table columns
+ * An all-args constructor is provided to initialize a User object with all fields,
+ * and a no-args constructor is available for use in frameworks or tools that
+ * require a default constructor.
+ */
 @Entity
 @Table(name = "users")
 public class User {
