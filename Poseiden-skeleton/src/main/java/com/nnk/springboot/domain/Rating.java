@@ -37,26 +37,26 @@ public class Rating {
             regexp = "^[A-Z][a-z]{1,2}[1-3]?$",
             message = "Invalid Moody's rating format. Expected: Aaa, Aa1, Baa3, etc."
     )
-    @Column(name="moodysRating", length=125)
+    @Column(name="moodys_rating", length=125)
     private String moodysRating;
 
     @Pattern(
             regexp = "^[A-Z]{1,3}[+-]?$",
             message = "Invalid S&P rating format. Expected: AAA, BB+, CCC-, etc."
     )
-    @Column(name="sandPRating", length=125)
+    @Column(name="sand_p_rating", length=125)
     private String sandPRating;
 
     @Pattern(
             regexp = "^[A-Z]{1,3}[+-]?$",
             message = "Invalid S&P rating format. Expected: AAA, BB+, CCC-, etc."
     )
-    @Column(name="fitchRating", length=125)
+    @Column(name="fitch_rating", length=125)
     private String fitchRating;
 
     @NotNull(message = "Order number is required")
     @PositiveOrZero(message = "Order number must be positive or zero")
-    @Column(name="orderNumber")
+    @Column(name="order_number")
     private Integer orderNumber;
 
     public Integer getId() {

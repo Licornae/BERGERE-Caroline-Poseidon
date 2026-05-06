@@ -43,7 +43,7 @@ public class RatingController {
     {
         log.info("Listing all Rating entities");
         model.addAttribute("ratings", ratingService.findAll());
-        log.debug("Found {} RuleName entities", ((List<Rating>)model.getAttribute("ratings")).size());
+        log.debug("Found {} Rating entities", ((List<Rating>)model.getAttribute("ratings")).size());
         return "rating/list";
     }
 
@@ -111,7 +111,7 @@ public class RatingController {
        }
        catch (IllegalArgumentException e) {
            log.warn("Rating not found with ID: {}", id);
-            return "redirect:/rating/list";
+           return "redirect:/rating/list";
         }
     }
 

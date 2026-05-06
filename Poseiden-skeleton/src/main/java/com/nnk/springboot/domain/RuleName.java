@@ -42,10 +42,10 @@ public class RuleName {
     @Column(name="template", length=125)
     private String template;
 
-    @Column(name="sqlStr", length=125)
+    @Column(name="sql_str", length=125)
     private String sqlStr;
 
-    @Column(name="sqlPart", length=125)
+    @Column(name="sql_part", length=125)
     private String sqlPart;
 
     public Integer getId() {

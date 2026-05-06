@@ -35,7 +35,7 @@ public class UnitCurvePointTests {
         LocalDate asOfDate1 = LocalDate.parse("2026-04-15");
         LocalDate asOfDate2 = LocalDate.parse("2026-04-16");
 
-        //Courbe EURIBOR au 15/04/2026
+        // Courbe 101
         CurvePoint cp1 = new CurvePoint();
         cp1.setId(1);
         cp1.setCurveId(101);
@@ -60,7 +60,7 @@ public class UnitCurvePointTests {
         cp3.setValue(0.9);
         cp3.setCreationDate(new Timestamp(System.currentTimeMillis()));
 
-        // Courbe ID 102 (ex: Obligations d'État françaises) pour une autre date (16/04/2026)
+        // Courbe 102
         CurvePoint cp4 = new CurvePoint();
         cp4.setId(4);
         cp4.setCurveId(102);
@@ -115,12 +115,13 @@ public class UnitCurvePointTests {
 
         when(curvePointRepository.findById(1)).thenReturn(Optional.of(cp));
 
-        Optional<CurvePoint> result = curvePointService.findById(1);
+        CurvePoint result = curvePointService.findById(1);
 
-        assertThat(result).isPresent();
-        assertThat(result.get().getCurveId()).isEqualTo(101);
-        assertThat(result.get().getTerm()).isEqualTo(0.5);
-        assertThat(result.get().getValue()).isEqualTo(1.2);
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1);
+        assertThat(result.getCurveId()).isEqualTo(101);
+        assertThat(result.getTerm()).isEqualTo(0.5);
+        assertThat(result.getValue()).isEqualTo(1.2);
     }
 
     @Test

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,7 +57,7 @@ public class CurvePointControllerTest {
 
         List<CurvePoint> mockCurvePoints = Arrays.asList(cp1, cp2);
 
-        Mockito.when(curvePointService.findAll()).thenReturn(mockCurvePoints);
+        when(curvePointService.findAll()).thenReturn(mockCurvePoints);
 
         mockMvc.perform(get("/curvePoint/list"))
                 .andExpect(status().isOk())
@@ -75,7 +76,7 @@ public class CurvePointControllerTest {
         curvePoint.setTerm(1.5);
         curvePoint.setValue(2.0);
 
-        Mockito.when(curvePointService.save(Mockito.any(CurvePoint.class))).thenReturn(curvePoint);
+        when(curvePointService.save(Mockito.any(CurvePoint.class))).thenReturn(curvePoint);
 
         mockMvc.perform(post("/curvePoint/validate")
                         .param("curveId", "10")
@@ -111,7 +112,7 @@ public class CurvePointControllerTest {
         mockCurvePoint.setValue(2.0);
         mockCurvePoint.setCreationDate(new Timestamp(System.currentTimeMillis()));
 
-        Mockito.when(curvePointService.findById(1)).thenReturn(Optional.of(mockCurvePoint));
+        when(curvePointService.findById(1)).thenReturn(mockCurvePoint);
 
         mockMvc.perform(get("/curvePoint/update/1"))
                 .andExpect(status().isOk())
@@ -131,7 +132,7 @@ public class CurvePointControllerTest {
         updatedCurvePoint.setTerm(2.5);
         updatedCurvePoint.setValue(3.0);
 
-        Mockito.when(curvePointService.save(Mockito.any(CurvePoint.class))).thenReturn(updatedCurvePoint);
+        when(curvePointService.save(Mockito.any(CurvePoint.class))).thenReturn(updatedCurvePoint);
 
         mockMvc.perform(post("/curvePoint/update/1")
                         .param("curveId", "10")
@@ -160,7 +161,7 @@ public class CurvePointControllerTest {
     @WithMockUser(username = "testuser")
     public void deleteCurvePoint_shouldDeleteAndRedirect() throws Exception {
         CurvePoint mockCurvePoint = new CurvePoint();
-        Mockito.when(curvePointService.findById(1)).thenReturn(Optional.of(mockCurvePoint));
+        when(curvePointService.findById(1)).thenReturn(mockCurvePoint);
         mockMvc.perform(get("/curvePoint/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/curvePoint/list"));

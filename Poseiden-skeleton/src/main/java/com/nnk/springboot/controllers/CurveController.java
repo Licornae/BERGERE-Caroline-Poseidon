@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.services.CurvePointService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ public class CurveController {
     }
 
     @GetMapping("/curvePoint/add")
-    public String addBidForm(CurvePoint bid) {
+    public String addCurvePointForm(CurvePoint curvePoint) {
         log.info("Displaying add CurvePoint form");
         return "curvePoint/add";
     }
@@ -61,12 +62,11 @@ public class CurveController {
         log.info("Displaying update form for CurvePoint with ID: {}", id);
 
         try{
-            CurvePoint curvePoint = curvePointService.findById(id).orElseThrow(() ->
-                    new IllegalArgumentException("Invalid CurvePoint Id:" + id));
+            CurvePoint curvePoint = curvePointService.findById(id);
             model.addAttribute("curvePoint", curvePoint);
             log.debug("Found CurvePoint for update: {}", curvePoint);
             return "curvePoint/update";
-        } catch(IllegalArgumentException e){
+        } catch(EntityNotFoundException e){
             log.warn("CurvePoint not found with ID: {}", id);
             return "redirect:/curvePoint/list";
         }

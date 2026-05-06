@@ -26,7 +26,7 @@ public class CurvePoint {
     @NotNull(message = "Curve ID is required")
     @Positive(message = "Curve ID must be positive")
     @Column(name="curve_id")
-    private Integer curveId; //Identifiant de la courbe à laquelle ce point appartient (ex: courbe EURIBOR, courbe des obligations d'État).
+    private Integer curveId; //Identifiant de la courbe à laquelle ce point appartient.
 
     @NotNull(message= "As Of Date is required")
     @PastOrPresent(message= "As Of Date cannot be in the future")
@@ -40,12 +40,9 @@ public class CurvePoint {
     private Double term;  //Échéance du point (en années ou fraction d'année). Ex: 0.5 = 6 mois, 5.0 = 5 ans.
 
     @NotNull(message = "Value is required")
-    @DecimalMin(value = "0.0", message = "Value must be positive or zero")
     @Column(name="value")
-    private Double value; //Valeur du taux (en %) à cette échéance. Ex: 1.2 = 1.2%.
+    private Double value; //Valeur du taux (en %) à cette échéance.
 
-    //@NotNull(message = "Creation Date is required")
-    @PastOrPresent(message = "Creation Date cannot be in the future")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name="creation_date")
     private Timestamp creationDate; //Date de création du point dans le système.

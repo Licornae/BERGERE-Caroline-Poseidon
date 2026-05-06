@@ -52,16 +52,15 @@ public class CurvePointServiceImpl implements CurvePointService {
      * @throws EntityNotFoundException if the CurvePoint entity with the specified ID does not exist
      */
     @Override
-    public Optional<CurvePoint> findById(int id) {
+    public CurvePoint findById(int id) {
         log.debug("Finding CurvePoint entity by id: {}", id);
-        Optional<CurvePoint> curvePoint = curvePointRepository.findById(id);
-        if (curvePoint.isEmpty()) {
-            String errorMsg = "CurvePoint not found for id: " + id;
-            log.error(errorMsg);
-            throw new EntityNotFoundException(errorMsg);
-        }
-        log.debug("Found CurvePoint entity: {}", curvePoint.get());
-        return curvePoint;
+
+        return curvePointRepository.findById(id)
+                .orElseThrow(() -> {
+                    String errorMsg = "CurvePoint not found for id: " + id;
+                    log.error(errorMsg);
+                    return new EntityNotFoundException(errorMsg);
+                });
     }
 
     /**
