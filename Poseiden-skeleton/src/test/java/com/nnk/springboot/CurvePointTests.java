@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Disabled
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 public class CurvePointTests {
@@ -25,6 +25,7 @@ public class CurvePointTests {
 	public void curvePointTest() {
 		CurvePoint curvePoint = new CurvePoint();
 		curvePoint.setCurveId(10);
+		curvePoint.setAsOfDate(LocalDate.now());
 		curvePoint.setTerm(10d);
 		curvePoint.setValue(30d);
 
