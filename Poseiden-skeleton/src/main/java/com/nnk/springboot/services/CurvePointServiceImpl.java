@@ -87,6 +87,15 @@ public class CurvePointServiceImpl implements CurvePointService {
         }
     }
 
+    /**
+     * Deletes a CurvePoint entity by its unique identifier.
+     * If the entity is not found, an IllegalArgumentException is thrown.
+     * Logs the deletion attempt and result, whether successful or not.
+     *
+     * @param id the unique identifier of the CurvePoint entity to delete
+     * @throws IllegalArgumentException if the CurvePoint entity with the specified ID does not exist
+     * @throws RuntimeException if an error occurs while attempting to delete the entity
+     */
     @Override
     public void deleteById(Integer id) {
         log.debug("Deleting CurvePoint entity with id: {}", id);
