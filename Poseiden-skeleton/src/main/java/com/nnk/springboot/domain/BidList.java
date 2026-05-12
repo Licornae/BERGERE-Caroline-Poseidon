@@ -1,5 +1,7 @@
 package com.nnk.springboot.domain;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.*;
 
 import jakarta.persistence.*;
@@ -12,18 +14,21 @@ import java.sql.Timestamp;
 @Table(name = "bidlist")
 public class BidList {
     public BidList() {}
-    // TODO: ajouter des contraintes de validation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer BidListId;
 
+    @NotBlank(message = "Account is mandatory")
     @Column(name="account", length=30, nullable=false)
     private String account;
 
+    @NotBlank(message = "Type is mandatory")
     @Column(name="type", length=30, nullable=false)
     private String type;
 
+    @NotNull(message = "Bid Quantity is mandatory")
+    @Positive(message = "Bid Quantity must be positive")
     @Column(name="bidQuantity")
     private Double bidQuantity;
 

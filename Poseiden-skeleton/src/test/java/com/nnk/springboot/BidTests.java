@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 
-@Disabled
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 public class BidTests {
@@ -21,7 +20,6 @@ public class BidTests {
 	@Autowired
 	private BidListRepository bidListRepository;
 
-	@Disabled
 	@Test
 	public void bidListTest() {
 		BidList bid = new BidList();
