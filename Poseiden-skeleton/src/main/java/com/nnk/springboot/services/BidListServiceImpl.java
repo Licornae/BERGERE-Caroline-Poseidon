@@ -78,6 +78,15 @@ public class BidListServiceImpl implements BidListService {
         }
     }
 
+    /**
+     * Deletes a BidList entity with the specified unique identifier.
+     * If the entity does not exist, an {@code IllegalArgumentException} is thrown.
+     * Logs the operation's details and handles any unexpected errors.
+     *
+     * @param id the unique identifier of the BidList entity to be deleted
+     * @throws IllegalArgumentException if no BidList entity is found for the provided id
+     * @throws RuntimeException if an unexpected error occurs during the deletion process
+     */
     @Override
     public void deleteById(Integer id) {
 
