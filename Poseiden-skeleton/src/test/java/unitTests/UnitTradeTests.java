@@ -2,6 +2,9 @@ package unitTests;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.TradeRepository;
+import com.nnk.springboot.services.TradeService;
+import com.nnk.springboot.services.TradeServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +26,7 @@ public class UnitTradeTests {
     private TradeRepository tradeRepository;
 
     @InjectMocks
-    private TradeService tradeService;
+    private TradeServiceImpl tradeService;
 
     @Test
     public void findAll_shouldReturnList() {
@@ -63,8 +66,8 @@ public class UnitTradeTests {
         when(tradeRepository.findById(999)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tradeService.findById(999))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Trade with id 1 not found");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Trade not found for id: 999");
     }
 
     @Test
@@ -86,15 +89,11 @@ public class UnitTradeTests {
 
         int TradeId = 1;
 
-        when(TradeRepository.existsById(TradeId)).thenReturn(true);
-        doNothing().when(TradeRepository).deleteById(TradeId);
+        when(tradeRepository.existsById(TradeId)).thenReturn(true);
+        doNothing().when(tradeRepository).deleteById(TradeId);
 
         tradeService.deleteById(TradeId);
 
         verify(tradeRepository, times(1)).deleteById(1);
     }
-
-
-
-
 }
