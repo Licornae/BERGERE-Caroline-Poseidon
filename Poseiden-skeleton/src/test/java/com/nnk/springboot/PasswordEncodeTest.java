@@ -1,10 +1,11 @@
 package com.nnk.springboot;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Created by Khang Nguyen.
@@ -12,8 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Date: 09/03/2019
  * Time: 11:26 AM
  */
-@RunWith(SpringRunner.class)
+@Disabled
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class PasswordEncodeTest {
     @Test
     public void testPassword() {

@@ -16,9 +16,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.when;
 
 @WebMvcTest(BidListController.class)
 @ContextConfiguration(classes = Application.class)
@@ -33,7 +35,7 @@ public class BidListControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
-    public void home_shouldReturnListView() throws Exception {
+    public void list_shouldReturnListView() throws Exception {
 
         BidList bid1 = new BidList();
         bid1.setBidListId(1);
@@ -47,7 +49,7 @@ public class BidListControllerTest {
         bid2.setType("Type2");
         bid2.setBidQuantity(20.0);
 
-        Mockito.when(bidListService.findAll()).thenReturn(Arrays.asList(bid1, bid2));
+        when(bidListService.findAll()).thenReturn(Arrays.asList(bid1, bid2));
 
         mockMvc.perform(get("/bidList/list"))
                 .andExpect(status().isOk())
@@ -71,7 +73,7 @@ public class BidListControllerTest {
         BidList savedBid = new BidList();
         savedBid.setBidListId(1);
 
-        Mockito.when(bidListService.save(Mockito.any(BidList.class))).thenReturn(savedBid);
+        when(bidListService.save(Mockito.any(BidList.class))).thenReturn(savedBid);
 
         mockMvc.perform(post("/bidList/validate")
                         .param("account", "Account Test")
@@ -104,7 +106,7 @@ public class BidListControllerTest {
         bid.setType("Type");
         bid.setBidQuantity(10.0);
 
-        Mockito.when(bidListService.findById(1)).thenReturn((bid));
+        when(bidListService.findById(1)).thenReturn((bid));
 
         mockMvc.perform(get("/bidList/update/1"))
                 .andExpect(status().isOk())
@@ -119,7 +121,7 @@ public class BidListControllerTest {
         BidList updatedBid = new BidList();
         updatedBid.setBidListId(1);
 
-        Mockito.when(bidListService.save(Mockito.any(BidList.class))).thenReturn(updatedBid);
+        when(bidListService.save(Mockito.any(BidList.class))).thenReturn(updatedBid);
 
         mockMvc.perform(post("/bidList/update/1")
                         .param("account", "Updated")
@@ -137,6 +139,6 @@ public class BidListControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bidList/list"));
 
-        Mockito.verify(bidListService).deleteById(1);
+        verify(bidListService).deleteById(1);
     }
 }
