@@ -2,21 +2,33 @@ package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.sql.Timestamp;
 
 
+/**
+ * Represents a Trade entity mapped to the "trade" table in the database.
+ * This class contains information about financial trades, including details
+ * such as account, type of trade, quantities, prices, benchmarks, dates, and other metadata.
+ * Each field in this class corresponds to a column in the "trade" table.
+ * The entity is annotated with JPA and Jakarta Bean Validation annotations
+ * to define database mapping and validation constraints.
+ */
 @Entity
 @Table(name = "trade")
 public class Trade {
-    // TODO: ajouter des contraintes de validation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tradeId;
 
+    @NotBlank(message = "Account is mandatory")
     @Column(name="account", length=30)
     private String account;
 
+    @NotBlank(message = "Type is mandatory")
     @Column(name="type", length=30)
     private String type;
 
