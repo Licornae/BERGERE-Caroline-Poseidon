@@ -25,26 +25,23 @@ public class CurvePoint {
 
     @NotNull(message = "Curve ID is required")
     @Positive(message = "Curve ID must be positive")
-    @Column(name="curve_id")
+    @Column(name="CurveId")
     private Integer curveId; //Identifiant de la courbe à laquelle ce point appartient.
 
-    @NotNull(message= "As Of Date is required")
     @PastOrPresent(message= "As Of Date cannot be in the future")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name="as_of_date")
+    @Column(name="asOfDate")
     private LocalDate asOfDate; //Date à laquelle ce point de courbe est valide
 
-    @NotNull(message = "Term is required")
     @Positive(message = "Term must be positive")
     @Column(name="term")
     private Double term;  //Échéance du point (en années ou fraction d'année). Ex: 0.5 = 6 mois, 5.0 = 5 ans.
 
-    @NotNull(message = "Value is required")
     @Column(name="value")
     private Double value; //Valeur du taux (en %) à cette échéance.
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    @Column(name="creation_date")
+    @Column(name="creationDate")
     private Timestamp creationDate; //Date de création du point dans le système.
 
     @PrePersist
