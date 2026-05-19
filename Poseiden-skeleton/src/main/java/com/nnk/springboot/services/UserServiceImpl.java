@@ -4,6 +4,7 @@ import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -60,21 +63,65 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * Saves a User entity in the data source.
+     * Logs the save operation, delegates persistence to the UserRepository,
+     * and returns the persisted User with its generated identifier.
+     *
+     * @param user the User entity to save
+     * @return the saved User entity
+     * @throws RuntimeException if an error occurs while saving the User
+     */
     @Override
     public User save(User user) {
 
         log.debug("Saving User: {}", user);
 
         try{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             User savedUser = userRepository.save(user);
             log.info("Successfully saved User with ID: {}", savedUser.getId());
             return savedUser;
         } catch (Exception e){
             log.error("Error saving User: {}", user, e);
-            throw new RuntimeException("Failed to save RuleName: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to save User: " + e.getMessage(), e);
         }
     }
 
+    /**
+     * Updates an existing User entity with the provided details. The user's
+     * username, fullname, and role are updated. If a new password is provided,
+     * it is encoded and updated as well.
+     *
+     * @param id the unique identifier of the User to update
+     * @param user a User object containing the updated details
+     * @return the updated User entity
+     * @throws IllegalArgumentException if no User is found for the provided id
+     */
+    @Override
+    public User update(int id, User user) {
+        User existingUser = findById(id).get();
+
+        existingUser.setUsername(user.getUsername());
+        existingUser.setFullname(user.getFullname());
+        existingUser.setRole(user.getRole());
+
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    /**
+     * Deletes a User entity from the data source by its unique identifier.
+     * Checks that the User exists before deletion, logs the operation,
+     * and raises an error if no User is found for the provided id.
+     *
+     * @param id the unique identifier of the User to delete
+     * @throws IllegalArgumentException if no User is found for the provided id
+     * @throws RuntimeException if an error occurs while deleting the User
+     */
     @Override
     public void deleteById(Integer id) {
 
@@ -89,7 +136,7 @@ public class UserServiceImpl implements UserService {
             log.info("Successfully deleted User with ID: {}", id);
         } catch (Exception e){
             log.error("Error deleting User with ID: {}", id, e);
-            throw new RuntimeException("Failed to delete RuleName: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to delete User: " + e.getMessage(), e);
         }
     }
 }

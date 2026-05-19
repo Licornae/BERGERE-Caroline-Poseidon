@@ -63,7 +63,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/user/validate")
                         .param("username", "user1")
-                        .param("password", "password")
+                        .param("password", "Password1!")
                         .param("fullname", "User One")
                         .param("role", "USER"))
                 .andExpect(status().is3xxRedirection())
@@ -80,7 +80,7 @@ public class UserControllerTest {
                         .param("role", "USER"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/add"))
-                .andExpect(model().attributeHasFieldErrors("user", "username"));
+                .andExpect(model().attributeHasFieldErrors("user", "username", "password"));
     }
 
     //TESTS UPDATE
@@ -120,7 +120,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/user/update/1")
                         .param("username", "updated")
-                        .param("password", "password")
+                        .param("password", "Password1!")
                         .param("fullname", "Updated User")
                         .param("role", "ADMIN"))
                 .andExpect(status().is3xxRedirection())
@@ -138,7 +138,7 @@ public class UserControllerTest {
                         .param("role", "ADMIN"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/update"))
-                .andExpect(model().attributeHasFieldErrors("user", "username"));
+                .andExpect(model().attributeHasFieldErrors("user", "username", "password"));
     }
 
     //TESTS DELETE

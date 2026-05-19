@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,9 @@ public class UnitUserTests {
 
     @Mock
     private UserRepository userRepository;
+
+    @Spy
+    private BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -74,14 +79,35 @@ public class UnitUserTests {
     }
 
     @Test
+    public void save_shouldHashPasswordBeforeSavingUser() {
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("Password1!");
+        user.setFullname("New User");
+        user.setRole("USER");
+
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User savedUser = userService.save(user);
+
+        assertThat(savedUser.getPassword()).isNotEqualTo("Password1!");
+        assertThat(passwordEncoder.matches("Password1!", savedUser.getPassword())).isTrue();
+
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
     public void save_shouldReturnSavedUser() {
 
         User userToSave = new User();
         userToSave.setUsername("newUser");
+        userToSave.setPassword("Password1!");
 
         User savedUser = new User();
         savedUser.setId(1);
         savedUser.setUsername("newUser");
+        savedUser.setPassword("Password1!");
 
         when(userRepository.save(userToSave)).thenReturn(savedUser);
 
@@ -89,6 +115,65 @@ public class UnitUserTests {
 
         assertThat(actualUser.getId()).isNotNull();
         assertThat(actualUser.getUsername()).isEqualTo(savedUser.getUsername());
+    }
+
+    @Test
+    public void update_shouldHashNewPassword_whenPasswordFieldIsNotBlank() {
+
+        User existingUser = new User();
+        existingUser.setId(1);
+        existingUser.setUsername("john");
+        existingUser.setPassword("$2a$10$existingEncodedPassword");
+        existingUser.setFullname("John Doe");
+        existingUser.setRole("USER");
+
+        User updatedData = new User();
+        updatedData.setUsername("john");
+        updatedData.setPassword("NewPassword1!");
+        updatedData.setFullname("John Doe");
+        updatedData.setRole("USER");
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User result = userService.update(1, updatedData);
+
+        assertThat(result.getPassword()).isNotEqualTo("NewPassword1!");
+        assertThat(passwordEncoder.matches("NewPassword1!", result.getPassword())).isTrue();
+
+        verify(userRepository).findById(1);
+        verify(userRepository).save(existingUser);
+    }
+
+    @Test
+    public void update_shouldKeepExistingPassword_whenPasswordFieldIsBlank() {
+
+        User existingUser = new User();
+        existingUser.setId(1);
+        existingUser.setUsername("john");
+        existingUser.setPassword("$2a$10$existingEncodedPassword");
+        existingUser.setFullname("John Doe");
+        existingUser.setRole("USER");
+
+        User updatedData = new User();
+        updatedData.setUsername("john-updated");
+        updatedData.setPassword("");
+        updatedData.setFullname("John Updated");
+        updatedData.setRole("ADMIN");
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        User result = userService.update(1, updatedData);
+
+        assertThat(result.getPassword()).isEqualTo("$2a$10$existingEncodedPassword");
+        assertThat(result.getUsername()).isEqualTo("john-updated");
+        assertThat(result.getFullname()).isEqualTo("John Updated");
+        assertThat(result.getRole()).isEqualTo("ADMIN");
+
+        verify(userRepository).findById(1);
+        verify(userRepository).save(existingUser);
     }
 
     @Test

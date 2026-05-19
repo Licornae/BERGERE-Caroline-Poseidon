@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * Date: 09/03/2019
  * Time: 11:26 AM
  */
-@Disabled
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 public class PasswordEncodeTest {
