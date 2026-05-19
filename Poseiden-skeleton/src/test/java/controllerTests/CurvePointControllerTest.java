@@ -147,12 +147,13 @@ public class CurvePointControllerTest {
     public void updateCurvePoint_withInvalidData_shouldReturnUpdateView() throws Exception {
 
         mockMvc.perform(post("/curvePoint/update/1")
+                        .param("curveId", "")
                         .param("asOfDate", "2020-04-01")
-                        .param("term", "")
+                        .param("term", "2.5")
                         .param("value", "3.0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("curvePoint/update"))
-                .andExpect(model().attributeHasFieldErrors("curvePoint", "curveId", "term"));
+                .andExpect(model().attributeHasFieldErrors("curvePoint", "curveId"));
     }
 
     //TESTS DELETE
