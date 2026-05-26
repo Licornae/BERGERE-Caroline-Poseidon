@@ -116,7 +116,7 @@ public class UserControllerTest {
 
         User updatedUser = new User(1, "updated", "password", "Updated User", "ADMIN");
 
-        Mockito.when(userService.save(Mockito.any(User.class))).thenReturn(updatedUser);
+        Mockito.when(userService.update(Mockito.eq(1), Mockito.any(User.class))).thenReturn(updatedUser);
 
         mockMvc.perform(post("/user/update/1")
                         .param("username", "updated")

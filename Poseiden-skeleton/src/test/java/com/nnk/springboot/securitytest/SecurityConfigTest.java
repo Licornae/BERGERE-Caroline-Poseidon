@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = LoginController.class)
 @Import(SecurityConfig.class)
@@ -48,7 +52,26 @@ public class SecurityConfigTest {
     }
 
     @Test
+    public void login_shouldSucceed_whenCredentialsAreValid() throws Exception {
+        when(customUserDetailsService.loadUserByUsername("valid-user"))
+                .thenReturn(User.withUsername("valid-user")
+                        .password("encoded-password")
+                        .roles("USER")
+                        .build());
+        when(passwordEncoder.matches("valid-password", "encoded-password")).thenReturn(true);
+
+        mockMvc.perform(formLogin("/app/login")
+                        .user("valid-user")
+                        .password("valid-password"))
+                .andExpect(authenticated().withUsername("valid-user"))
+                .andExpect(redirectedUrl("/bidList/list"));
+    }
+
+    @Test
     public void login_shouldFail_whenCredentialsAreInvalid() throws Exception {
+        when(customUserDetailsService.loadUserByUsername("bad-user"))
+                .thenThrow(new UsernameNotFoundException("User not found: bad-user"));
+
         mockMvc.perform(formLogin("/app/login")
                         .user("bad-user")
                         .password("bad-password"))

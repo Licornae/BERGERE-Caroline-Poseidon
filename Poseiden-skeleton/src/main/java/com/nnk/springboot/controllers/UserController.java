@@ -4,7 +4,6 @@ import com.nnk.springboot.domain.User;
 import com.nnk.springboot.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -77,8 +76,6 @@ public class UserController {
         }
         try {
             log.info("Saving new user: {}", user);
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
             userService.save(user);
             model.addAttribute("users", userService.findAll());
             log.info("Successfully saved user: {}", user);
@@ -137,10 +134,7 @@ public class UserController {
             return "user/update";
         }
         try {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            user.setId(id);
-            userService.save(user);
+            userService.update(id, user);
             model.addAttribute("users", userService.findAll());
             log.info("Successfully updated user with ID: {}", id);
             return "redirect:/user/list";
