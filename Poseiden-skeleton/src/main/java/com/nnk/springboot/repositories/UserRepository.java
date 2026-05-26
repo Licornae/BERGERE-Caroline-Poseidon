@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * Repository interface for performing CRUD operations on the User entity.
  * Extends JpaRepository to provide standard database operations and
@@ -14,4 +16,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
+    /**
+     * Finds a user by its username.
+     *
+     * @param username username to search
+     * @return optional containing the user if found
+     */
+    Optional<User> findByUsername(String username);
 }
