@@ -37,7 +37,7 @@ public class User {
     private Integer id;
 
     @NotBlank(message = "Username is mandatory")
-    @Column(name = "username", length = 125)
+    @Column(name = "username", length = 125, nullable = false, unique = true)
     private String username;
 
     @NotBlank(message = "Password is mandatory", groups = OnCreate.class)

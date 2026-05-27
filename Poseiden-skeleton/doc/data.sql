@@ -87,12 +87,13 @@ CREATE TABLE RuleName (
 
 CREATE TABLE Users (
   Id INT NOT NULL AUTO_INCREMENT,
-  username VARCHAR(125),
+  username VARCHAR(125) NOT NULL,
   password VARCHAR(125),
   fullname VARCHAR(125),
   role VARCHAR(125),
 
-  PRIMARY KEY (Id)
+  PRIMARY KEY (Id),
+  UNIQUE KEY UK_users_username (username)
 );
 
 insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN");
