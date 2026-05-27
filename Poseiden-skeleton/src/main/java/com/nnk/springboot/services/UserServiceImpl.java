@@ -127,16 +127,17 @@ public class UserServiceImpl implements UserService {
 
         log.debug("Deleting User with ID: {}", id);
 
+        if (!userRepository.existsById(id)) {
+            log.warn("Attempted to delete non-existent User with ID: {}", id);
+            throw new IllegalArgumentException("User not found for id: " + id);
+        }
+
         try{
-            if (!userRepository.existsById(id)) {
-                log.warn("Attempted to delete non-existent User with ID: {}", id);
-                throw new IllegalArgumentException("User not found for id: " + id);
-            }
             userRepository.deleteById(id);
             log.info("Successfully deleted User with ID: {}", id);
-        } catch (Exception e){
+        } catch (RuntimeException e){
             log.error("Error deleting User with ID: {}", id, e);
-            throw new RuntimeException("Failed to delete User: " + e.getMessage(), e);
+            throw e;
         }
     }
 }
