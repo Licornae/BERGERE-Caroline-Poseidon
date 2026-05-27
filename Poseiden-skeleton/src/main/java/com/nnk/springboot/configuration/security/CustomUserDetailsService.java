@@ -12,11 +12,9 @@ import org.springframework.stereotype.Service;
  * This class implements the {@link UserDetailsService} interface, which is
  * a core component of Spring Security for retrieving user-related data
  * by username during authentication.
- *
  * The class interacts with the {@link UserRepository} to fetch User entities
  * from the database and convert them into {@link UserDetails} objects used
  * by Spring Security.
- *
  * It supports the authentication process by providing user credentials
  * and roles to Spring Security.
  */

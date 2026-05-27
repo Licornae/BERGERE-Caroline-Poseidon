@@ -34,6 +34,14 @@ public class BidListController {
     @Autowired
     private BidListService bidListService;
 
+    /**
+     * Customizes the initialization of the {@link WebDataBinder} to handle specific data binding cases.
+     * Registers a custom editor for {@link Timestamp} to parse string representations into {@link Timestamp} objects.
+     * This method ensures that text inputs representing timestamps are correctly converted to {@link Timestamp} instances
+     * using specific date and time formatting rules.
+     *
+     * @param binder the {@link WebDataBinder} used to bind request parameters to JavaBean objects
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Timestamp.class, new PropertyEditorSupport() {
@@ -61,7 +69,6 @@ public class BidListController {
             }
         });
     }
-
 
     /**
      * Handles requests for the endpoint "/bidList/list" to retrieve and display all bid lists.
