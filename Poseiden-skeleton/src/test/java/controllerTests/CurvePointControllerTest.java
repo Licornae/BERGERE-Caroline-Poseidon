@@ -1,6 +1,7 @@
 package controllerTests;
 
 import com.nnk.springboot.Application;
+import com.nnk.springboot.configuration.SecurityConfig;
 import com.nnk.springboot.controllers.CurveController;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.services.CurvePointService;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
@@ -20,13 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = CurveController.class)
 @ContextConfiguration(classes = Application.class)
-@AutoConfigureMockMvc(addFilters = false)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 public class CurvePointControllerTest {
 
     @Autowired
@@ -77,7 +81,7 @@ public class CurvePointControllerTest {
 
         when(curvePointService.save(Mockito.any(CurvePoint.class))).thenReturn(curvePoint);
 
-        mockMvc.perform(post("/curvePoint/validate")
+        mockMvc.perform(post("/curvePoint/validate").with(csrf())
                         .param("curveId", "10")
                         .param("asOfDate", "2020-04-01")
                         .param("term", "1.5")
@@ -89,7 +93,7 @@ public class CurvePointControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     public void validate_withInvalidData_shouldNotSaveCurvePointAndReturnAddView() throws Exception {
-        mockMvc.perform(post("/curvePoint/validate")
+        mockMvc.perform(post("/curvePoint/validate").with(csrf())
                         .param("asOfDate", "2026-04-01")
                         .param("term", "1.5")
                         .param("value", "2.0"))
@@ -101,7 +105,7 @@ public class CurvePointControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     public void validate_withCurveIdOutOfRange_shouldReturnAddViewWithCurveIdError() throws Exception {
-        mockMvc.perform(post("/curvePoint/validate")
+        mockMvc.perform(post("/curvePoint/validate").with(csrf())
                         .param("curveId", "128")
                         .param("asOfDate", "2020-04-01")
                         .param("term", "1.5")
@@ -109,6 +113,17 @@ public class CurvePointControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("curvePoint/add"))
                 .andExpect(model().attributeHasFieldErrors("curvePoint", "curveId"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    public void validate_withoutCsrf_shouldReturnForbidden() throws Exception {
+        mockMvc.perform(post("/curvePoint/validate")
+                        .param("curveId", "10")
+                        .param("asOfDate", "2020-04-01")
+                        .param("term", "1.5")
+                        .param("value", "2.0"))
+                .andExpect(status().isForbidden());
     }
 
     //TESTS UPDATE
@@ -146,7 +161,7 @@ public class CurvePointControllerTest {
 
         when(curvePointService.save(Mockito.any(CurvePoint.class))).thenReturn(updatedCurvePoint);
 
-        mockMvc.perform(post("/curvePoint/update/1")
+        mockMvc.perform(post("/curvePoint/update/1").with(csrf())
                         .param("curveId", "10")
                         .param("asOfDate", "2020-04-01")
                         .param("term", "2.5")
@@ -159,7 +174,7 @@ public class CurvePointControllerTest {
     @WithMockUser(username = "testuser")
     public void updateCurvePoint_withInvalidData_shouldReturnUpdateView() throws Exception {
 
-        mockMvc.perform(post("/curvePoint/update/1")
+        mockMvc.perform(post("/curvePoint/update/1").with(csrf())
                         .param("curveId", "")
                         .param("asOfDate", "2020-04-01")
                         .param("term", "2.5")
@@ -175,7 +190,7 @@ public class CurvePointControllerTest {
     public void deleteCurvePoint_shouldDeleteAndRedirect() throws Exception {
         CurvePoint mockCurvePoint = new CurvePoint();
         when(curvePointService.findById(1)).thenReturn(mockCurvePoint);
-        mockMvc.perform(post("/curvePoint/delete/1"))
+        mockMvc.perform(post("/curvePoint/delete/1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/curvePoint/list"));
         Mockito.verify(curvePointService, Mockito.times(1)).deleteById(1);

@@ -1,6 +1,7 @@
 package controllerTests;
 
 import com.nnk.springboot.Application;
+import com.nnk.springboot.configuration.SecurityConfig;
 import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.services.BidListService;
@@ -13,12 +14,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,7 +29,8 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(BidListController.class)
 @ContextConfiguration(classes = Application.class)
-@AutoConfigureMockMvc(addFilters = false)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 public class BidListControllerTest {
 
     @Autowired
@@ -77,7 +81,7 @@ public class BidListControllerTest {
 
         when(bidListService.save(Mockito.any(BidList.class))).thenReturn(savedBid);
 
-        mockMvc.perform(post("/bidList/validate")
+        mockMvc.perform(post("/bidList/validate").with(csrf())
                         .param("account", "Account Test")
                         .param("type", "Type Test")
                         .param("bidQuantity", "10"))
@@ -89,13 +93,24 @@ public class BidListControllerTest {
     @WithMockUser
     public void validate_withInvalidData_shouldReturnAddView() throws Exception {
 
-        mockMvc.perform(post("/bidList/validate")
+        mockMvc.perform(post("/bidList/validate").with(csrf())
                         .param("account", "") // invalide
                         .param("type", "Type Test")
                         .param("bidQuantity", "10"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("bidList/add"))
                 .andExpect(model().attributeHasFieldErrors("bidList", "account"));
+    }
+
+    @Test
+    @WithMockUser
+    public void validate_withoutCsrf_shouldReturnForbidden() throws Exception {
+
+        mockMvc.perform(post("/bidList/validate")
+                        .param("account", "Account Test")
+                        .param("type", "Type Test")
+                        .param("bidQuantity", "10"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -125,7 +140,7 @@ public class BidListControllerTest {
 
         when(bidListService.save(Mockito.any(BidList.class))).thenReturn(updatedBid);
 
-        mockMvc.perform(post("/bidList/update/1")
+        mockMvc.perform(post("/bidList/update/1").with(csrf())
                         .param("account", "Updated")
                         .param("type", "Updated")
                         .param("bidQuantity", "20"))
@@ -142,7 +157,7 @@ public class BidListControllerTest {
 
         when(bidListService.save(Mockito.any(BidList.class))).thenReturn(updatedBid);
 
-        mockMvc.perform(post("/bidList/update/1")
+        mockMvc.perform(post("/bidList/update/1").with(csrf())
                         .param("bidListId", "999")
                         .param("account", "Updated")
                         .param("type", "Updated")
@@ -159,7 +174,7 @@ public class BidListControllerTest {
     @WithMockUser
     public void deleteBid_shouldRedirectToList() throws Exception {
 
-        mockMvc.perform(post("/bidList/delete/1"))
+        mockMvc.perform(post("/bidList/delete/1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bidList/list"));
 

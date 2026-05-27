@@ -4,6 +4,7 @@ package controllerTests;
 import com.nnk.springboot.controllers.RuleNameController;
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.Application;
+import com.nnk.springboot.configuration.SecurityConfig;
 import com.nnk.springboot.services.RuleNameService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -18,13 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest( controllers = RuleNameController.class)
 @ContextConfiguration(classes = Application.class)
-@AutoConfigureMockMvc(addFilters = false)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 public class RuleNameControllerTest {
 
     @Autowired
@@ -67,7 +71,7 @@ public class RuleNameControllerTest {
 
         Mockito.when(ruleNameService.save(Mockito.any(RuleName.class))).thenReturn(ruleName);
 
-        mockMvc.perform(post("/ruleName/validate")
+        mockMvc.perform(post("/ruleName/validate").with(csrf())
                         .param("name", "Rule1")
                         .param("description", "Description1")
                         .param("json", "Json1")
@@ -81,12 +85,21 @@ public class RuleNameControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     public void validate_withInvalidData_shouldReturnAddView() throws Exception {
-        mockMvc.perform(post("/ruleName/validate")
+        mockMvc.perform(post("/ruleName/validate").with(csrf())
                         .param("name", "")
                         .param("description", "Description1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("ruleName/add"))
                 .andExpect(model().attributeHasFieldErrors("ruleName", "name"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    public void validate_withoutCsrf_shouldReturnForbidden() throws Exception {
+        mockMvc.perform(post("/ruleName/validate")
+                        .param("name", "Rule1")
+                        .param("description", "Description1"))
+                .andExpect(status().isForbidden());
     }
 
     //TESTS UPDATE
@@ -118,7 +131,7 @@ public class RuleNameControllerTest {
 
         Mockito.when(ruleNameService.save(Mockito.any(RuleName.class))).thenReturn(updatedRuleName);
 
-        mockMvc.perform(post("/ruleName/update/1")
+        mockMvc.perform(post("/ruleName/update/1").with(csrf())
                         .param("name", "UpdatedRule")
                         .param("description", "UpdatedDescription")
                         .param("json", "UpdatedJson")
@@ -132,7 +145,7 @@ public class RuleNameControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     public void updateRuleName_withInvalidData_shouldReturnUpdateView() throws Exception {
-        mockMvc.perform(post("/ruleName/update/1")
+        mockMvc.perform(post("/ruleName/update/1").with(csrf())
                         .param("name", "")
                         .param("description", "UpdatedDescription"))
                 .andExpect(status().isOk())
@@ -155,7 +168,7 @@ public class RuleNameControllerTest {
         Mockito.when(ruleNameService.findById(1)).thenReturn(java.util.Optional.of(mockRuleName));
         Mockito.doNothing().when(ruleNameService).deleteById(1);
 
-        mockMvc.perform(post("/ruleName/delete/1"))
+        mockMvc.perform(post("/ruleName/delete/1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/ruleName/list"));
 

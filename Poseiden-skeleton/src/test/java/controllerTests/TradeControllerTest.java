@@ -1,6 +1,7 @@
 package controllerTests;
 
 import com.nnk.springboot.Application;
+import com.nnk.springboot.configuration.SecurityConfig;
 import com.nnk.springboot.controllers.TradeController;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.services.TradeService;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -18,13 +20,15 @@ import java.util.Arrays;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TradeController.class)
 @ContextConfiguration(classes = Application.class)
-@AutoConfigureMockMvc(addFilters = false)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 public class TradeControllerTest {
 
     @Autowired
@@ -74,12 +78,23 @@ public class TradeControllerTest {
 
         when(tradeService.save(any(Trade.class))).thenReturn(trade);
 
-        mockMvc.perform(post("/trade/validate")
+        mockMvc.perform(post("/trade/validate").with(csrf())
                         .param("account", "Account")
                         .param("type", "Type")
                         .param("buyQuantity", "10"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/trade/list"));
+    }
+
+    @Test
+    @WithMockUser
+    public void validateTrade_withoutCsrf_shouldReturnForbidden() throws Exception {
+
+        mockMvc.perform(post("/trade/validate")
+                        .param("account", "Account")
+                        .param("type", "Type")
+                        .param("buyQuantity", "10"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -108,7 +123,7 @@ public class TradeControllerTest {
 
         when(tradeService.save(any(Trade.class))).thenReturn(trade);
 
-        mockMvc.perform(post("/trade/update/1")
+        mockMvc.perform(post("/trade/update/1").with(csrf())
                         .param("account", "Updated")
                         .param("type", "Type")
                         .param("buyQuantity", "20"))
@@ -120,7 +135,7 @@ public class TradeControllerTest {
     @WithMockUser
     public void updateTrade_withInvalidData_shouldReturnUpdateView() throws Exception {
 
-        mockMvc.perform(post("/trade/update/1")
+        mockMvc.perform(post("/trade/update/1").with(csrf())
                         .param("account", "")
                         .param("type", "")
                         .param("buyQuantity", ""))
@@ -133,7 +148,7 @@ public class TradeControllerTest {
     @WithMockUser
     public void deleteTrade_shouldRedirectToList() throws Exception {
 
-        mockMvc.perform(post("/trade/delete/1"))
+        mockMvc.perform(post("/trade/delete/1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/trade/list"));
 
