@@ -135,7 +135,7 @@ public class RatingControllerTest {
         Mockito.when(ratingService.findById(1)).thenReturn(Optional.of(mockRating));
         Mockito.doNothing().when(ratingService).deleteById(1);
 
-        mockMvc.perform(get("/rating/delete/1"))
+        mockMvc.perform(post("/rating/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/rating/list"));
 

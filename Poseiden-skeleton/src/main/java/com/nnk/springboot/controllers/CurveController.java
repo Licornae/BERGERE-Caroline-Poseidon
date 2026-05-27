@@ -82,6 +82,7 @@ public class CurveController {
             return "redirect:/curvePoint/list";
         } catch (Exception e) {
             log.error("Error saving CurvePoint: {}", curvePoint, e);
+            model.addAttribute("errorMessage", "Failed to save CurvePoint. Please check entered values.");
             return "curvePoint/add";
         }
     }
@@ -163,7 +164,7 @@ public class CurveController {
      *         Returns "redirect:/curvePoint/list" if the deletion is successful, or "curvePoint/list"
      *         if an error occurs during the process.
      */
-    @GetMapping("/curvePoint/delete/{id}")
+    @PostMapping("/curvePoint/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
 
         log.info("Deleting CurvePoint with ID: {}", id);

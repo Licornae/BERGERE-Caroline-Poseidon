@@ -7,12 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class UserController {
      *         - "redirect:/user/list" if the user is successfully saved
      */
     @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
+    public String validate(@Validated({User.OnCreate.class, Default.class}) User user, BindingResult result, Model model) {
 
         log.info("Validating new user: {}", user);
 
@@ -124,7 +125,8 @@ public class UserController {
      * @return the name of the view to render or a redirect URL
      */
     @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
+    public String updateUser(@PathVariable("id") Integer id,
+                             @Validated({User.OnUpdate.class, Default.class}) User user,
                              BindingResult result, Model model) {
 
         log.info("Updating user with ID: {} - Data: {}", id, user);
@@ -154,7 +156,7 @@ public class UserController {
      * @param model the model object used to add error messages if an exception occurs
      * @return a redirect URL to the user list page
      */
-    @GetMapping("/user/delete/{id}")
+    @PostMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) {
 
         log.info("Deleting user with ID: {}", id);

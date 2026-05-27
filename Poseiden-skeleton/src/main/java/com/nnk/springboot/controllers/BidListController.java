@@ -7,12 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
+
+import java.beans.PropertyEditorSupport;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Controller class for handling HTTP requests related to BidList operations.
@@ -26,6 +33,34 @@ public class BidListController {
 
     @Autowired
     private BidListService bidListService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Timestamp.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                if (text == null || text.trim().isEmpty()) {
+                    setValue(null);
+                    return;
+                }
+
+                String value = text.trim();
+                try {
+                    if (value.contains("T")) {
+                        LocalDateTime localDateTime = LocalDateTime.parse(
+                                value,
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+                        );
+                        setValue(Timestamp.valueOf(localDateTime));
+                    } else {
+                        setValue(Timestamp.valueOf(value));
+                    }
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException("Invalid timestamp format: " + value, ex);
+                }
+            }
+        });
+    }
 
 
     /**
@@ -154,7 +189,7 @@ public class BidListController {
      * @param model the Model object used to add attributes for rendering views
      * @return the name of the view template to redirect to, specifically "redirect:/bidList/list"
      */
-    @GetMapping("/bidList/delete/{id}")
+    @PostMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
 
         log.info("Deleting bid with ID: {}", id);

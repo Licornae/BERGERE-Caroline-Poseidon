@@ -135,7 +135,7 @@ public class BidListControllerTest {
     @WithMockUser
     public void deleteBid_shouldRedirectToList() throws Exception {
 
-        mockMvc.perform(get("/bidList/delete/1"))
+        mockMvc.perform(post("/bidList/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bidList/list"));
 

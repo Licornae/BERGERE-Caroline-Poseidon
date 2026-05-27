@@ -25,6 +25,7 @@ public class CurvePoint {
 
     @NotNull(message = "Curve ID is required")
     @Positive(message = "Curve ID must be positive")
+    @Max(value = 127, message = "Curve ID must be between 1 and 127")
     @Column(name="CurveId")
     private Integer curveId; //Identifiant de la courbe à laquelle ce point appartient.
 

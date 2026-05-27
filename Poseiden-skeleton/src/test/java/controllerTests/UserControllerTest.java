@@ -129,6 +129,23 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    public void updateUser_withBlankPassword_shouldUpdateAndRedirect() throws Exception {
+
+        User updatedUser = new User(1, "updated", "encodedPassword", "Updated User", "ADMIN");
+
+        Mockito.when(userService.update(Mockito.eq(1), Mockito.any(User.class))).thenReturn(updatedUser);
+
+        mockMvc.perform(post("/user/update/1")
+                        .param("username", "updated")
+                        .param("password", "")
+                        .param("fullname", "Updated User")
+                        .param("role", "ADMIN"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/list"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
     public void updateUser_withInvalidData_shouldReturnUpdateView() throws Exception {
 
         mockMvc.perform(post("/user/update/1")
@@ -148,7 +165,7 @@ public class UserControllerTest {
 
         Mockito.doNothing().when(userService).deleteById(1);
 
-        mockMvc.perform(get("/user/delete/1"))
+        mockMvc.perform(post("/user/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"));
 
@@ -161,7 +178,7 @@ public class UserControllerTest {
 
         Mockito.doThrow(new RuntimeException()).when(userService).deleteById(1);
 
-        mockMvc.perform(get("/user/delete/1"))
+        mockMvc.perform(post("/user/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/list"));
     }

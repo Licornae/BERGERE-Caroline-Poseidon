@@ -49,7 +49,7 @@ public class Rating {
 
     @Pattern(
             regexp = "^[A-Z]{1,3}[+-]?$",
-            message = "Invalid S&P rating format. Expected: AAA, BB+, CCC-, etc."
+            message = "Invalid Fitch rating format. Expected: AAA, BB+, CCC-, etc."
     )
     @Column(name="fitchRating", length=125)
     private String fitchRating;

@@ -15,9 +15,10 @@
 			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
 			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
 			<a href="/ruleName/list">Rule</a>
+			<span th:if="${isAdmin}">&nbsp;|&nbsp;<a href="/user/list">Users</a></span>
 		</div>
 		<div class="col-6 text-right">
-			Logged in user: <b th:inline="text"  class="user"> [[${#authentication != null ? #authentication.name : 'Anonymous'}]] </b>
+			Logged in user: <b th:inline="text"  class="user"> [[${currentUsername}]] </b>
 			<form th:action="@{/app/logout}" method="POST">
 				<input type="submit" value="Logout"/>
 			</form>
@@ -46,7 +47,9 @@
 					<td th:text="${rating.orderNumber}"></td>
 					<td style="width: 15%" class="text-center">
 						<a th:href="@{/rating/update/{id}(id=${rating.id})}">Edit</a>&nbsp;|&nbsp;
-						<a th:href="@{/rating/delete/{id}(id=${rating.id})}">Delete</a>
+						<form th:action="@{/rating/delete/{id}(id=${rating.id})}" method="post" style="display:inline;">
+							<button type="submit" class="btn btn-link p-0 align-baseline">Delete</button>
+						</form>
 					</td>
 				</tr>
 			</tbody>

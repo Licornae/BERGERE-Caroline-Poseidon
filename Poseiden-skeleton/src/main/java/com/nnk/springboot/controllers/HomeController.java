@@ -10,7 +10,7 @@ public class HomeController
 	@RequestMapping("/")
 	public String home(Model model)
 	{
-		return "home";
+		return "redirect:/bidList/list";
 	}
 
 	@RequestMapping("/admin/home")

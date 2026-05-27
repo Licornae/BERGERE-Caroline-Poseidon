@@ -159,7 +159,7 @@ public class RuleNameController {
      * @param model the Model object used to pass data to the view
      * @return a redirect string to the list view of RuleName entities
      */
-    @GetMapping("/ruleName/delete/{id}")
+    @PostMapping("/ruleName/delete/{id}")
     public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
         log.info("Deleting RuleName with ID: {}", id);
 

@@ -3,7 +3,6 @@ package com.nnk.springboot.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 /**
  * Represents a User entity in the application with fields for id, username,
@@ -18,6 +17,9 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "users")
 public class User {
+
+    public interface OnCreate {}
+    public interface OnUpdate {}
 
     public User(int id, String username, String password, String fullname, String role) {
         this.id = id;
@@ -38,10 +40,15 @@ public class User {
     @Column(name = "username", length = 125)
     private String username;
 
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @NotBlank(message = "Password is mandatory", groups = OnCreate.class)
     @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$",
+            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+            groups = OnCreate.class,
+            message = "Password must contain at least one uppercase letter, one number and one special character"
+    )
+    @Pattern(
+            regexp = "^$|(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+            groups = OnUpdate.class,
             message = "Password must contain at least one uppercase letter, one number and one special character"
     )
     @Column(name = "password", length = 125)

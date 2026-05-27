@@ -98,6 +98,19 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrors("curvePoint", "curveId"));
     }
 
+    @Test
+    @WithMockUser(username = "testuser")
+    public void validate_withCurveIdOutOfRange_shouldReturnAddViewWithCurveIdError() throws Exception {
+        mockMvc.perform(post("/curvePoint/validate")
+                        .param("curveId", "128")
+                        .param("asOfDate", "2020-04-01")
+                        .param("term", "1.5")
+                        .param("value", "2.0"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("curvePoint/add"))
+                .andExpect(model().attributeHasFieldErrors("curvePoint", "curveId"));
+    }
+
     //TESTS UPDATE
     @Test
     @WithMockUser(username = "testuser")
@@ -162,7 +175,7 @@ public class CurvePointControllerTest {
     public void deleteCurvePoint_shouldDeleteAndRedirect() throws Exception {
         CurvePoint mockCurvePoint = new CurvePoint();
         when(curvePointService.findById(1)).thenReturn(mockCurvePoint);
-        mockMvc.perform(get("/curvePoint/delete/1"))
+        mockMvc.perform(post("/curvePoint/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/curvePoint/list"));
         Mockito.verify(curvePointService, Mockito.times(1)).deleteById(1);

@@ -158,7 +158,7 @@ public class RatingController {
      * @param model the Model object used to pass data to the view
      * @return a redirect string to the list view of Rating entities
      */
-    @GetMapping("/rating/delete/{id}")
+    @PostMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
 
         log.info("Deleting Rating with ID: {}", id);

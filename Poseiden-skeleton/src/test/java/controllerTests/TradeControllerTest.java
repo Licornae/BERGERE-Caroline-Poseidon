@@ -133,7 +133,7 @@ public class TradeControllerTest {
     @WithMockUser
     public void deleteTrade_shouldRedirectToList() throws Exception {
 
-        mockMvc.perform(get("/trade/delete/1"))
+        mockMvc.perform(post("/trade/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/trade/list"));
 

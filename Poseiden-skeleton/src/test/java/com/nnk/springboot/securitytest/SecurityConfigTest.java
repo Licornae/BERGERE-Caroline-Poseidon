@@ -21,7 +21,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(controllers = LoginController.class)
+@WebMvcTest(
+        controllers = LoginController.class,
+        properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration"
+)
 @Import(SecurityConfig.class)
 public class SecurityConfigTest {
 

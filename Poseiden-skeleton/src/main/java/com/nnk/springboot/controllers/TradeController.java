@@ -8,13 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 
+import java.beans.PropertyEditorSupport;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -27,6 +33,34 @@ public class TradeController {
 
     @Autowired
     private TradeService tradeService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Timestamp.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                if (text == null || text.trim().isEmpty()) {
+                    setValue(null);
+                    return;
+                }
+
+                String value = text.trim();
+                try {
+                    if (value.contains("T")) {
+                        LocalDateTime localDateTime = LocalDateTime.parse(
+                                value,
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+                        );
+                        setValue(Timestamp.valueOf(localDateTime));
+                    } else {
+                        setValue(Timestamp.valueOf(value));
+                    }
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException("Invalid timestamp format: " + value, ex);
+                }
+            }
+        });
+    }
 
     /**
      * Handles the HTTP request for displaying a list of Trade entities.
@@ -156,7 +190,7 @@ public class TradeController {
      * @return a string representing the name of the view to be rendered or
      *         a redirection endpoint in case of successful deletion
      */
-    @GetMapping("/trade/delete/{id}")
+    @PostMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
 
         log.info("Deleting trade with ID: {}", id);

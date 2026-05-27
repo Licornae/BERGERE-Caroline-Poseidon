@@ -155,7 +155,7 @@ public class RuleNameControllerTest {
         Mockito.when(ruleNameService.findById(1)).thenReturn(java.util.Optional.of(mockRuleName));
         Mockito.doNothing().when(ruleNameService).deleteById(1);
 
-        mockMvc.perform(get("/ruleName/delete/1"))
+        mockMvc.perform(post("/ruleName/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/ruleName/list"));
 
