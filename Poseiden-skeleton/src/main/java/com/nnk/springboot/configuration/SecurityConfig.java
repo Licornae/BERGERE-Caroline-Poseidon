@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/app/login",
+                                "/app/error",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
@@ -45,6 +46,9 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/bidList/list", true)
                         .failureUrl("/app/login?error=true")
                         .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/app/error")
                 )
                 .logout(logout -> logout
                         .logoutUrl("/app/logout")

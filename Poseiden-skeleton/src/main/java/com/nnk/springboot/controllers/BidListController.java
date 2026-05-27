@@ -171,6 +171,11 @@ public class BidListController {
                              BindingResult result, Model model) {
 
         log.info("Updating bid with ID: {} - Data: {}", id, bidList);
+        if (bidList.getBidListId() != null && !id.equals(bidList.getBidListId())) {
+            log.warn("Bid ID tampering detected: pathId={} formId={}", id, bidList.getBidListId());
+        }
+        // Always trust the path variable ID, never the hidden form field.
+        bidList.setBidListId(id);
 
         if (result.hasErrors()) {
             log.warn("Validation errors found for bid update: {}", result.getAllErrors());

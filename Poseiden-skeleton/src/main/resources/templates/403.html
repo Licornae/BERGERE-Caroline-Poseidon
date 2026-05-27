@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-      <title>Spring Boot</title>
+    <meta charset="utf-8"/>
+    <title>Acces refuse</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
 </head>
 <body>
-   <h3>Access Denied Exception</h3>
-   <div>
-	    Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
-	    <form th:action="@{/app/logout}" method="POST">
-	         <input type="submit" value="Logout"/>
-	    </form>
-   </div> 	 
-    <p class="error" th:text="${errorMsg}">Error</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Accès refusé (403)</h3>
+                    <p class="mb-2" th:text="${errorMsg}">Vous n'avez pas les permissions nécessaires pour accéder cette ressource.</p>
+                    <p class="text-muted mb-3">
+                        Utilisateur connecté :
+                        <strong th:text="${currentUsername}">User</strong>
+                    </p>
+                    <p class="text-muted mb-4">
+                        Page demandée :
+                        <code th:text="${requestUri}">/unknown</code>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="btn btn-primary" href="/bidList/list">Retour à la page d'accueil</a>
+                        <form th:action="@{/app/logout}" method="post" class="mb-0">
+                            <button type="submit" class="btn btn-outline-secondary">Se déconnecter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-</html>   
+</html>

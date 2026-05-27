@@ -1,7 +1,7 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("app")
 public class LoginController {
 
-    @Autowired
-    private UserRepository userRepository;
-
     @GetMapping("login")
     public ModelAndView login() {
         ModelAndView mav = new ModelAndView();
@@ -21,19 +18,13 @@ public class LoginController {
         return mav;
     }
 
-    @GetMapping("secure/article-details")
-    public ModelAndView getAllUserArticles() {
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("users", userRepository.findAll());
-        mav.setViewName("user/list");
-        return mav;
-    }
-
     @GetMapping("error")
-    public ModelAndView error() {
+    public ModelAndView error(HttpServletRequest request) {
         ModelAndView mav = new ModelAndView();
-        String errorMessage= "You are not authorized for the requested data.";
+        String errorMessage= "Vous n'avez pas les permissions nécessaires pour accéder cette ressource.";
         mav.addObject("errorMsg", errorMessage);
+        mav.addObject("requestUri", request.getRequestURI());
+        mav.setStatus(HttpStatus.FORBIDDEN);
         mav.setViewName("403");
         return mav;
     }

@@ -5,6 +5,7 @@ import com.nnk.springboot.controllers.BidListController;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.services.BidListService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -129,6 +131,28 @@ public class BidListControllerTest {
                         .param("bidQuantity", "20"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bidList/list"));
+    }
+
+    @Test
+    @WithMockUser
+    public void updateBid_shouldIgnoreTamperedFormId_andUsePathId() throws Exception {
+
+        BidList updatedBid = new BidList();
+        updatedBid.setBidListId(1);
+
+        when(bidListService.save(Mockito.any(BidList.class))).thenReturn(updatedBid);
+
+        mockMvc.perform(post("/bidList/update/1")
+                        .param("bidListId", "999")
+                        .param("account", "Updated")
+                        .param("type", "Updated")
+                        .param("bidQuantity", "20"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/bidList/list"));
+
+        ArgumentCaptor<BidList> captor = ArgumentCaptor.forClass(BidList.class);
+        verify(bidListService).save(captor.capture());
+        assertEquals(1, captor.getValue().getBidListId());
     }
 
     @Test
